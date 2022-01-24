@@ -6,7 +6,7 @@ Inspired by [This Project](https://github.com/subsoniq/valentineduino)
 ## Libraries
 [DS3231](https://github.com/NorthernWidget/DS3231)
 
-[arduino-tm16367](https://github.com/bremme/arduino-tm1637https://github.com/bremme/arduino-tm1637)
+[arduino-tm16367](https://github.com/bremme/arduino-tm1637)
 
 
 ## Parts Used:
