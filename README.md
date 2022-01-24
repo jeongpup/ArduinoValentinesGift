@@ -8,6 +8,8 @@ Inspired by [This Project](https://github.com/subsoniq/valentineduino)
 
 [arduino-tm16367](https://github.com/bremme/arduino-tm1637)
 
+[Time](https://github.com/PaulStoffregen/Time)
+
 
 ## Parts Used:
 
