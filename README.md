@@ -1,7 +1,15 @@
 # ArduinoValentinesGift
+
+## Credit
 Inspired by [This Project](https://github.com/subsoniq/valentineduino)
 
-Parts Used:
+## Libraries
+[DS3231](https://github.com/NorthernWidget/DS3231)
+
+[arduino-tm16367](https://github.com/bremme/arduino-tm1637https://github.com/bremme/arduino-tm1637)
+
+
+## Parts Used:
 
 1x [DS3231 Real Time Clock Module](https://www.amazon.com/dp/B082M3C36F/?coliid=I1RUBVB4DR567Q&colid=ZH75E1UDVA1G&psc=1&ref_=lv_ov_lig_dp_it)
 
