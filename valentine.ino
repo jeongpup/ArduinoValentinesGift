@@ -1,9 +1,11 @@
 #include <Time.h>
 #include <TimeLib.h>
-
-
-#include <SevenSegmentAsciiMap.h>
 #include <SevenSegmentTM1637.h>
+#include <Wire.h>
+#include <DS3231.h>
+
+
+
 
 
 const byte PIN_CLK = 7;   // define CLK pin (any digital pin)
@@ -19,38 +21,53 @@ int weeks ;
 void setup()
 {
     Serial.begin(9600);         // initializes the Serial connection @ 9600 baud
+    Wire.begin();
+    delay(500);
     display.begin();            // initializes the display
     display.clear();
     display.setBacklight(10);  // set the brightness to 100 %
-    LoveYouLcd();
+    display.setPrintDelay(500);
+
+    LoveMessage();
     delay(50);                // wait 1000 ms
-    adjustTime(1643096700  );
+
+    // vv REMOVE AFTER GETTING RTC Module vv
+    adjustTime(1643078640); // For testing purposes only
+    // ^^ REMOVE AFTER GETTING RTC Module ^^
     days_prev = 0;
-    days = 0;
 
 }
 
 void loop()
 {
-    days = ((now() - relationship) / 86400); //magic nubmer 86400 is the number of seconds in a day
+    Serialprintdate();
+    days = ((now() - relationship) / 86400); //86400 is seconds in a day
     time_t t = now();
-    serialprintdate();
-
 
     if ( 9 == day(t)  &&  1 == month(t)  )
     {
         delay(5000);
-        LoveYouLcd() ;
-        AnniversaryLcd() ;
+        LoveMessage() ;
+        AnniversaryMessage() ;
 
 
     }
+    if (23 == day(t) && 9 == month(t))
+    {
+        delay(5000);
+        BithdayMessage();
+    }
 
 
-    if (days - days_prev >= 1)
+    if (days - days_prev >= 1) // Without this display would keep refreshing and made a horrible blinking, so this was my solution without interrupts.
     {
         ShowDaysReading();
         days_prev = (days);
+    }
+
+    if (days >= 10000)
+    {
+        ShowDaysReading();
     }
 
 
@@ -58,51 +75,60 @@ void loop()
 
 void ShowDaysReading()
 {
-    ClearLcd() ;
     days = ((now() - relationship) / 86400); //magic nubmer 86400 is the number of seconds in a day
     weeks = ((now() - relationship) / (86400 * 7) ); //magic nubmer 86400 is the number of seconds in a day
     if (days <= 99999999 && days >= 10000)
     {
         if (weeks <= 9999 && weeks >= 1000)
         {
+            display.clear();
             display.print(weeks);
             delay(5000);
-            display.print("7day");
+            display.print("7 DAYS");
             delay(1000);
         }
         if (weeks <= 999 && weeks >= 100)
         {
-            display.print("0");
+            display.clear();
+            display.setCursor(0, 1);
             display.print(weeks);
             delay(5000);
-            display.print("7day");
+            display.print("7 DAYS");
             delay(1000);
         }
 
         if (weeks <= 99 && weeks >= 10)
         {
-            display.print("00");
+            display.clear();
+            display.setCursor(0, 2);
             display.print(weeks);
             delay(5000);
-            display.print("7day");
+            display.print("7 DAYS");
             delay(1000);
         }
 
         if (weeks <= 9 && weeks >= 0)
         {
-            display.print("000");
+            display.clear();
+            display.setCursor(0, 3);
             display.print(weeks);
+            delay(5000);
+            display.print("7 DAYS");
+            delay(1000);
         }
     }
 
     //days
     if (days <= 9999 && days >= 1000)
     {
+        display.clear();
+        display.setCursor(0, 0);
         display.print(days);
 
     }
     if (days <= 999 && days >= 100)
     {
+        display.clear();
         display.setCursor(0, 1);
         display.print(days);
 
@@ -110,6 +136,7 @@ void ShowDaysReading()
 
     if (days <= 99 && days >= 10)
     {
+        display.clear();
         display.setCursor(0, 2);
         display.print(days);
 
@@ -117,37 +144,35 @@ void ShowDaysReading()
 
     if (days <= 9 && days >= 0)
     {
+        display.clear();
+        display.setCursor(0, 3);
         display.print(days);
 
     }
 }
 
-void ClearLcd()
-{
-    display.clear();
-}
 
-void LoveYouLcd()
+void LoveMessage()
 {
     display.setPrintDelay(500);
-    display.print("LOUE YOU");  //Love
+    display.print("I LOVE YOU    ");  //Love
     delay(2500);
 }
 
-void AnniversaryLcd()
+void AnniversaryMessage()
 {
-
-    display.print("JEn"); //Jennifer
-    delay(2500);
-    display.print("LIAnn");  //Liam
-    delay(1500);
-    display.print("For");  //For
-    delay(1500);
-    display.print("EVER");  //Ever
-    delay(1500);
+    display.print("HAPPY ANNIVERSARY    ");
+    disply.clear();
+    display.print("    JENNIFER AND LIANN FOREVER    ");
 }
 
-void serialprintdate()
+void BithdayMessage()
+{
+    display.setPrintDelay(500);
+    display.print("HAPPY BIRTHDAY    ");
+}
+
+void Serialprintdate()
 {
     Serial.print("today is ");
     Serial.print(month());
