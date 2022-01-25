@@ -19,6 +19,7 @@ void setup() {
   display.begin();            // initializes the display
   display.clear();
   display.setBacklight(10);  // set the brightness to 100 %
+  display.print("1234567");
   LoveYouLcd();
   delay(50);                // wait 1000 ms
   adjustTime(1643049780);
@@ -98,9 +99,10 @@ void ShowDaysReading()
     display.print(days); 
 
   }
-  if (days<=999 && days>=100) 
+  if (days<=999 && days>=100)
   { 
-    display.print(days); 
+   display.setCursor(0,1);
+   display.print(days); 
 
   }
 
@@ -125,13 +127,9 @@ void ClearLcd()
 
 void LoveYouLcd() 
   {  
-  display.clear(); 
-  display.print("LOUE");  //Love
+  display.setPrintDelay(1000);
+  display.print("LOUE YOU");  //Love
   delay(2500);
-  display.clear(); 
-  display.print("YOU ");  //You
-  delay(2500);
-  display.clear();    
 }
 
 void AnniversaryLcd() 
