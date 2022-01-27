@@ -2,8 +2,7 @@
 #include <TimeLib.h>
 #include <SevenSegmentTM1637.h>
 #include <Wire.h>
-#include <DS3231.h>
-
+#include <DS3232RTC.h>
 
 
 
@@ -23,24 +22,25 @@ void setup()
     Serial.begin(9600);         // initializes the Serial connection @ 9600 baud
     Wire.begin();
     delay(500);
+    setSyncProvider(RTC.get);
+    setSyncInterval(36000);
     display.begin();            // initializes the display
     display.clear();
     display.setBacklight(10);  // set the brightness to 100 %
     display.setPrintDelay(500);
-
     LoveMessage();
     delay(50);                // wait 1000 ms
-
-    // vv REMOVE AFTER GETTING RTC Module vv
-    adjustTime(1643078640); // For testing purposes only
-    // ^^ REMOVE AFTER GETTING RTC Module ^^
     days_prev = 0;
+    // vv REMOVE AFTER GETTING RTC Module vv
+    /// adjustTime(1643111100 ); // For testing purposes only
+    // ^^ REMOVE AFTER GETTING RTC Module ^^
+
 
 }
 
 void loop()
 {
-    Serialprintdate();
+    // Serialprintdate(); // Used for testing date. Not important.
     days = ((now() - relationship) / 86400); //86400 is seconds in a day
     time_t t = now();
 
@@ -162,7 +162,7 @@ void LoveMessage()
 void AnniversaryMessage()
 {
     display.print("HAPPY ANNIVERSARY    ");
-    disply.clear();
+    display.clear();
     display.print("    JENNIFER AND LIANN FOREVER    ");
 }
 
