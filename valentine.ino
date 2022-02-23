@@ -1,17 +1,14 @@
-#include <Time.h>
-#include <TimeLib.h>
-#include <SevenSegmentTM1637.h>
+#include <TimeLib.h> // https://github.com/PaulStoffregen/Time
+#include <SevenSegmentTM1637.h> // https://github.com/bremme/arduino-tm1637
+#include <DS3232RTC.h>  // https://github.com/JChristensen/DS3232RTC/
 #include <Wire.h>
-#include <DS3232RTC.h>
-
-
-
-
-const byte PIN_CLK = 7;   // define CLK pin (any digital pin)
+DS3232RTC myRTC(false); 
+const byte PIN_CLK = 9;   // define CLK pin (any digital pin)
 const byte PIN_DIO = 8;   // define DIO pin (any digital pin)
 SevenSegmentTM1637    display(PIN_CLK, PIN_DIO);
 
-unsigned long relationship = 1610150400 ;  //in unixtime relationship started
+/// Below Set when the relationship started in unixtime
+const long relationship = 1610150400; // Sat Jan 09 2021 00:00:00 UTC+0000
 unsigned long days ;
 unsigned long days_prev;
 int weeks ;
@@ -21,13 +18,15 @@ void setup()
 {
     Serial.begin(9600);         // initializes the Serial connection @ 9600 baud
     Wire.begin();
+    myRTC.begin();
     delay(500);
     setSyncProvider(RTC.get);
-    setSyncInterval(36000);
+    setSyncInterval(600); //sets RTC and 
     display.begin();            // initializes the display
     display.clear();
-    display.setBacklight(10);  // set the brightness to 100 %
-    display.setPrintDelay(500);
+    display.setBacklight(10);  // set the brightness to 10%
+    display.setPrintDelay(500); // delay before text scrolls
+    delay(500);
     LoveMessage();
     delay(50);                // wait 1000 ms
     days_prev = 0;
@@ -40,9 +39,10 @@ void setup()
 
 void loop()
 {
-    // Serialprintdate(); // Used for testing date. Not important.
+    
     days = ((now() - relationship) / 86400); //86400 is seconds in a day
     time_t t = now();
+    void digitalClockDisplay();
 
     if ( 9 == day(t)  &&  1 == month(t)  )
     {
@@ -172,12 +172,26 @@ void BithdayMessage()
     display.print("HAPPY BIRTHDAY    ");
 }
 
-void Serialprintdate()
+void digitalClockDisplay()
 {
-    Serial.print("today is ");
-    Serial.print(month());
-    Serial.print("/");
+    // digital clock display of the time
+    Serial.print(hour());
+    printDigits(minute());
+    printDigits(second());
+    Serial.print(' ');
     Serial.print(day());
-    Serial.print("/");
-    Serial.println(year());
+    Serial.print(' ');
+    Serial.print(month());
+    Serial.print(' ');
+    Serial.print(year());
+    Serial.println();
+}
+
+void printDigits(int digits)
+{
+    // utility function for digital clock display: prints preceding colon and leading 0
+    Serial.print(':');
+    if(digits < 10)
+        Serial.print('0');
+    Serial.print(digits);
 }
